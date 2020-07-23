@@ -1,0 +1,9 @@
+TRAIN_PATH = 'D:\\Code\\Kaggle\\Movie Review Sentiment Analysis\\dataset\\train.tsv'
+SHUFFLE = True
+EPOCHS = 60
+BATCH_SIZE = 1
+EMBEDDING_SIZE = 128
+HIDDEN_SIZE = 512
+ALPHA = 1e-3
+MODEL_PATH = r'D:\Code\Kaggle\Movie Review Sentiment Analysis\models'
+SAVE = True
