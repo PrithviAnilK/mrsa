@@ -53,6 +53,6 @@ def get_dataloader(config, _type):
 
 def get_dataloader_configs(config, _type):
     if _type == "TRAIN":
-        return config["TRAIN_PATH"], config["WORD_TO_INDEX_PATH"],  config["BATCH_SIZE"], config["SHUFFLE"], config["NUM_WORKERS"]
+        return config["TRAIN_PATH"], config["WORD_TO_INDEX_PATH"], config["BATCH_SIZE"], config["SHUFFLE"], config["NUM_WORKERS"]
     elif _type == "TEST":
-        return config["TEST_PATH"], config["WORD_TO_INDEX_PATH"],  1, False, 4
+        return config["TEST_PATH"], config["WORD_TO_INDEX_PATH"],  1, False, config["NUM_WORKERS"]
