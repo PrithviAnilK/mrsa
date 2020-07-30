@@ -4,7 +4,6 @@ from tqdm import tqdm
 def train(net, dataloader, epochs, batch_size, criterion, optimizer, device, model_path, save):
     for e in range(epochs):
         running_loss = 0
-        running_acc = 0
         count = 0
         runner = tqdm(enumerate(dataloader), total = len(dataloader))
         for dex, batch in runner:
@@ -14,10 +13,10 @@ def train(net, dataloader, epochs, batch_size, criterion, optimizer, device, mod
             optimizer.zero_grad()
             x, y = batch
             x, y = x.to(device), y.to(device)
-            print(x)
-            print(h)
-            print(c)
-            o, (h, c) = net(x, (h, c))
+            o = net(x, (h, c))
+            # print(o, y)
+            # print(o.size())
+            # print(y.size())
             loss = criterion(o, y)
             loss.backward()
             optimizer.step()
