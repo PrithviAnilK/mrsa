@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn  
 import torch.nn.functional as F 
 
+
 class SeqModel(nn.Module):
     def __init__(
         self, 
@@ -37,3 +38,16 @@ class SeqModel(nn.Module):
 
     def zero_state(self, batch_size):
         return (torch.zeros(1, batch_size, self.hidden_size), torch.zeros(1, batch_size, self.hidden_size))
+
+
+def get_model(config):
+    return SeqModel(
+        config["NUM_CLASSES"],
+        config["MODEL_TYPE"],
+        config["VOCAB_SIZE"],
+        config["EMBEDDING_SIZE"],
+        config["HIDDEN_SIZE"],
+        config["NUM_LAYERS"],
+        config["DROPOUT"],
+        config["BIDIRECTIONAL"],
+    )

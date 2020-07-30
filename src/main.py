@@ -1,9 +1,10 @@
+import sys
 import torch
 import torch.optim as optim
 import torch.nn as nn
-from config import TRAIN_PATH, NUM_WORKERS, BATCH_SIZE, SHUFFLE, WORD_TO_INDEX_PATH, NUM_CLASSES, MODEL_TYPE, VOCAB_SIZE, EMBEDDING_SIZE, HIDDEN_SIZE, NUM_LAYERS, DROPOUT, BIDIRECTIONAL, ALPHA, EPOCHS, MODEL_PATH, SAVE
+from config import get_config
 from dataloader import get_dataloader 
-from models import SeqModel
+from models import get_model
 from trainer import train
 
 def reproduce(seed, device):
@@ -19,19 +20,12 @@ if __name__ == "__main__":
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     reproduce(23, device)
     
-    train_dataloader = get_dataloader(TRAIN_PATH, WORD_TO_INDEX_PATH,  BATCH_SIZE, SHUFFLE, NUM_WORKERS)
+    version = sys.argv[-1] 
+    config = get_config(version)
+    net = get_model(config)
+    train_dataloader = get_dataloader(config, "TRAIN")
     
-    net = SeqModel(
-        NUM_CLASSES, 
-        MODEL_TYPE,
-        VOCAB_SIZE, 
-        EMBEDDING_SIZE, 
-        HIDDEN_SIZE, 
-        NUM_LAYERS, 
-        DROPOUT, 
-        BIDIRECTIONAL
-    )   
     net.to(device)
-    optimizer = optim.Adam(net.parameters(), lr = ALPHA)
+    optimizer = optim.Adam(net.parameters(), lr = config["ALPHA"])
     criterion = nn.CrossEntropyLoss()
-    train(net, train_dataloader, EPOCHS, BATCH_SIZE, criterion, optimizer, device, MODEL_PATH, SAVE)
+    train(net, train_dataloader, criterion, optimizer, device, config, version)

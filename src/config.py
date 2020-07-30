@@ -1,18 +1,10 @@
-TRAIN_PATH = 'D:\\Code\\Kaggle\\Movie Review Sentiment Analysis\\dataset\\train.tsv'
-SHUFFLE = True
-NUM_WORKERS = 1
-EPOCHS = 5
-BATCH_SIZE = 4
-WORD_TO_INDEX_PATH = 'D:\\Code\\Kaggle\\Movie Review Sentiment Analysis\\dataset\\word_to_index.json'
-GLOVE_PATH = 'D:\\datasets\\GLOVE\\glove.840B.300d.txt'
-NUM_CLASSES = 5
-EMBEDDING_SIZE = 128
-HIDDEN_SIZE = 256
-ALPHA = 1e-3
-MODEL_PATH = 'D:\\Code\\Kaggle\\Movie Review Sentiment Analysis\models\\train.pth'
-SAVE = True
-MODEL_TYPE = "LSTM" 
-VOCAB_SIZE = 13554
-NUM_LAYERS = 1
-DROPOUT = 0
-BIDIRECTIONAL = False
+import os
+import json
+
+
+def get_config(version):
+    CONFIG_PATH = 'D:\\Code\\Kaggle\\Movie Review Sentiment Analysis\\configs'
+    f = open(os.path.join(CONFIG_PATH, '{}.json'.format(version)), 'r')
+    config = json.load(f)
+    f.close()
+    return config
