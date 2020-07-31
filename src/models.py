@@ -19,6 +19,8 @@ class SeqModel(nn.Module):
         super(SeqModel, self).__init__()
         self.hidden_size = hidden_size
         self.num_classes = num_classes
+        self.num_directions = 2 if bidirectional == True else 1
+        self.num_layers = num_layers
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         
@@ -37,7 +39,7 @@ class SeqModel(nn.Module):
         return x
 
     def zero_state(self, batch_size):
-        return (torch.zeros(1, batch_size, self.hidden_size), torch.zeros(1, batch_size, self.hidden_size))
+        return (torch.zeros(self.num_directions * self.num_layers, batch_size, self.hidden_size), torch.zeros(self.num_directions * self.num_layers, batch_size, self.hidden_size))
 
 
 def get_model(config):
