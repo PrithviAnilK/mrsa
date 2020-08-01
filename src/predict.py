@@ -15,17 +15,13 @@ def save_prediction(predictions, ids, version):
 
 def predict(net, dataloader, device):
     net.eval()
-    net.cpu()    
     predictions = []
     ids = []
     runner = tqdm(dataloader, total = len(dataloader))
     for x, phrase_id in runner:
         batch_size = x.size()[0]
-        h, c = net.zero_state(batch_size)
-        h.to(device)
-        c.to(device)
         x.to(device)
-        output = net(x, (h, c))
+        output = net(x)
         preds = torch.argmax(output, dim = 1)
         preds = preds[0].item()
         phrase_id = phrase_id[0].item()
@@ -38,7 +34,6 @@ if __name__ == "__main__":
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     config = get_config(version)
     net = get_model(config)
-    net.to(device)
 
     model_path = config["MODEL_PATH"]
     load_path = os.path.join(model_path, '{}.pth'.format(version))

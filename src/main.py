@@ -1,5 +1,7 @@
 import sys
 import torch
+import random
+import numpy as np
 import torch.optim as optim
 import torch.nn as nn
 from config import get_config
@@ -8,6 +10,8 @@ from models import get_model
 from trainer import train
 
 def reproduce(seed, device):
+    random.seed(seed)
+    np.random.seed(seed)
     torch.manual_seed(seed) 
     if str(device) == 'cuda':
         torch.cuda.manual_seed(seed)

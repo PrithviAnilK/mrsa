@@ -1,10 +1,13 @@
 import torch
 from torch.utils.data import Dataset, DataLoader
+from torch.utils.data.sampler import SubsetRandomSampler
+import numpy as np
 import spacy
 from spacy.lang.en.stop_words import STOP_WORDS
 import pandas as pd
 import string
 import json
+
 
 class SentimentDataset(Dataset):
     def __init__(self, path, word_to_index_path, _type):
@@ -40,19 +43,47 @@ class SentimentDataset(Dataset):
 
 
 def get_dataloader(config, _type):
-    path, word_to_index_path, batch_size, shuffle, num_workers = get_dataloader_configs(config, _type)
+    path, word_to_index_path, batch_size , num_workers, val_split = get_dataloader_configs(config, _type)
     dataset = SentimentDataset(path, word_to_index_path, _type)
-    dataloader = DataLoader(
-        dataset, 
-        batch_size = batch_size, 
-        shuffle = shuffle, 
-        num_workers = num_workers
-    )
+
+    if _type == "TRAIN":
+        dataset_size = len(dataset)
+        indices = list(range(dataset_size))
+        split = int(np.floor(val_split * dataset_size))
+        train_indices, val_indices = indices[split:], indices[:split]
+        train_sampler = SubsetRandomSampler(train_indices)
+        val_sampler = SubsetRandomSampler(val_indices)
+
+        train_dataloader = DataLoader(
+            dataset, 
+            batch_size = batch_size, 
+            num_workers = num_workers,
+            sampler = train_sampler
+        )
+        val_dataloader = DataLoader(
+            dataset, 
+            batch_size = batch_size, 
+            num_workers = num_workers,
+            sampler = val_sampler
+        )
+        dataloader = {
+            "TRAIN": train_dataloader,
+            "VAL": val_dataloader
+        }
+
+    elif _type == "TEST":
+        dataloader =  DataLoader(
+            dataset, 
+            batch_size = batch_size, 
+            shuffle = False, 
+            num_workers = num_workers,
+        ) 
+
     return dataloader
 
 
 def get_dataloader_configs(config, _type):
     if _type == "TRAIN":
-        return config["TRAIN_PATH"], config["WORD_TO_INDEX_PATH"], config["BATCH_SIZE"], config["SHUFFLE"], config["NUM_WORKERS"]
+        return config["TRAIN_PATH"], config["WORD_TO_INDEX_PATH"], config["BATCH_SIZE"], config["NUM_WORKERS"], config["VAL_SPLIT"]
     elif _type == "TEST":
-        return config["TEST_PATH"], config["WORD_TO_INDEX_PATH"],  1, False, config["NUM_WORKERS"]
+        return config["TEST_PATH"], config["WORD_TO_INDEX_PATH"],  1, config["NUM_WORKERS"], config["VAL_SPLIT"]

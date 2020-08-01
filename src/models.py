@@ -21,6 +21,7 @@ class SeqModel(nn.Module):
         self.num_classes = num_classes
         self.num_directions = 2 if bidirectional == True else 1
         self.num_layers = num_layers
+        self.model_type = model_type
 
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         
@@ -28,18 +29,19 @@ class SeqModel(nn.Module):
             MODEL = nn.GRU
         elif model_type == "LSTM":
             MODEL = nn.LSTM
-        self.seqmodel = MODEL(input_size = embedding_dim, hidden_size = hidden_size, batch_first = True, num_layers = num_layers, dropout = dropout, bidirectional = bidirectional)
-            
-        self.linear = nn.Linear(hidden_size, num_classes)
+        self.seqmodel = MODEL(input_size = embedding_dim, hidden_size = hidden_size, batch_first = True, num_layers = num_layers , bidirectional = bidirectional)
+        
+        self.linear= nn.Linear(hidden_size, num_classes)
 
-    def forward(self, x, prev_state):
+
+    def forward(self, x):
         x = self.embedding(x)
-        _, (x, c) = self.seqmodel(x, prev_state)
+        if self.model_type == "GRU":
+            _, x = self.seqmodel(x)
+        elif self.model_type == "LSTM":
+            _, (x, c) = self.seqmodel(x)
         x = self.linear(x)[0]
         return x
-
-    def zero_state(self, batch_size):
-        return (torch.zeros(self.num_directions * self.num_layers, batch_size, self.hidden_size), torch.zeros(self.num_directions * self.num_layers, batch_size, self.hidden_size))
 
 
 def get_model(config):
