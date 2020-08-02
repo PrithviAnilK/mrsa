@@ -17,7 +17,7 @@ def predict(net, dataloader, device):
     net.eval()
     predictions = []
     ids = []
-    runner = tqdm(dataloader, total = len(dataloader))
+    runner = tqdm(dataloader, total = len(dataloader), desc = "TEST")
     for x, phrase_id in runner:
         batch_size = x.size()[0]
         x.to(device)

@@ -8,6 +8,7 @@ from config import get_config
 from dataloader import get_dataloader 
 from models import get_model
 from trainer import train
+from predict import predict, save_prediction
 
 def reproduce(seed, device):
     random.seed(seed)
@@ -23,12 +24,13 @@ def reproduce(seed, device):
 if __name__ == "__main__":    
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
     reproduce(23, device)
-    
+
     version = sys.argv[-1] 
     config = get_config(version)
     net = get_model(config)
     train_dataloader = get_dataloader(config, "TRAIN")
     
+    # Training
     net.to(device)
     optimizer = optim.Adam(net.parameters(), lr = config["ALPHA"])
     criterion = nn.CrossEntropyLoss()

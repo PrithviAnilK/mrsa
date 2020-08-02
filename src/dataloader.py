@@ -31,8 +31,8 @@ class SentimentDataset(Dataset):
     def __getitem__(self, dex):
         phrase = self.Phrase[dex].lower()
         cleaned_phrase = [str(word.lemma_) for word in self.nlp(phrase) if word.lemma_ not in STOP_WORDS]
-        X = list(map(lambda x: self.word_to_index[x] if x in self.word_to_index else 13553, cleaned_phrase))
-        X += [13553] * (35 - len(X))
+        X = list(map(lambda x: self.word_to_index[x] if x in self.word_to_index else 14974, cleaned_phrase))
+        X += [14974] * (35 - len(X))
         X = torch.LongTensor(X)
         if self._type == "TRAIN":
             Y = self.Sentiment[dex]
