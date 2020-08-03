@@ -32,6 +32,6 @@ if __name__ == "__main__":
     
     # Training
     net.to(device)
-    optimizer = optim.Adam(net.parameters(), lr = config["ALPHA"])
+    optimizer = optim.Adam(net.parameters(), lr = config["ALPHA"], weight_decay = config["LAMBDA"])
     criterion = nn.CrossEntropyLoss()
     train(net, train_dataloader, criterion, optimizer, device, config, version)

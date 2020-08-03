@@ -2,3 +2,4 @@ models
 configs
 submissions
 __pycache__
+dataset/glove.npy

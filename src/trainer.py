@@ -39,27 +39,26 @@ def train(net, dataloader, criterion, optimizer, device, config, version):
                     avg_loss = running_loss / count
                     accuracy = running_correct / count
                     runner.set_postfix(accuracy = '{:4f}'.format(100 * accuracy), avg_loss = '{:4f}'.format(avg_loss))
-           
-                print('{} \t  Epoch: {}/{} \t Loss: {:4f} \t Accuracy {:4f}'.format(mode, e, epochs, running_loss, accuracy))
             
             elif mode == "VAL":
-                net.eval()
-                for dex, batch in runner:
-                    x, y = batch
-                    x, y = x.to(device), y.to(device)
-                    batch_size = x.size()[0]
-                    o = net(x)
-                    loss = criterion(o, y)
-                    running_correct += correct(o, y)
-                    running_loss += loss.item()
-                    count += y.size()[0]
-                    avg_loss = running_loss / count
-                    accuracy = running_correct / count
-                    runner.set_postfix(accuracy = '{:4f}'.format(100 * accuracy), avg_loss = '{:4f}'.format(avg_loss))
-
-                print('{} \t  Epoch: {}/{} \t Loss: {:4f} \t Accuracy {:4f}'.format(mode, e, epochs, running_loss, accuracy))
+                with torch.no_grad():
+                    net.eval()
+                    for dex, batch in runner:
+                        x, y = batch
+                        x, y = x.to(device), y.to(device)
+                        batch_size = x.size()[0]
+                        o = net(x)
+                        loss = criterion(o, y)
+                        running_correct += correct(o, y)
+                        running_loss += loss.item()
+                        count += y.size()[0]
+                        avg_loss = running_loss / count
+                        accuracy = running_correct / count
+                        runner.set_postfix(accuracy = '{:4f}'.format(100 * accuracy), avg_loss = '{:4f}'.format(avg_loss))
 
                 if save == True and accuracy > max_acc: 
                     max_acc = accuracy
                     save_path = os.path.join(model_path, '{}.pth'.format(version))
                     torch.save(net.state_dict(), save_path)
+
+            print('{} \t  Epoch: {}/{} \t Loss: {:4f} \t Accuracy {:4f}'.format(mode, e, epochs, running_loss, accuracy))

@@ -18,15 +18,16 @@ def predict(net, dataloader, device):
     predictions = []
     ids = []
     runner = tqdm(dataloader, total = len(dataloader), desc = "TEST")
-    for x, phrase_id in runner:
-        batch_size = x.size()[0]
-        x.to(device)
-        output = net(x)
-        preds = torch.argmax(output, dim = 1)
-        preds = preds[0].item()
-        phrase_id = phrase_id[0].item()
-        predictions.append(preds)
-        ids.append(phrase_id)
+    with torch.no_grad():
+        for x, phrase_id in runner:
+            batch_size = x.size()[0]
+            x.to(device)
+            output = net(x)
+            preds = torch.argmax(output, dim = 1)
+            preds = preds[0].item()
+            phrase_id = phrase_id[0].item()
+            predictions.append(preds)
+            ids.append(phrase_id)
     return predictions, ids
 
 if __name__ == "__main__":
