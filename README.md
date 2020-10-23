@@ -1,8 +1,4 @@
-# Movie Review Sentiment Analysis ( Kaggle )
+# Movie Review Sentiment Analysis 
 
+- Sentiment Analysis on Movie Reviews using Rotten Tomatoes movie review dataset.
 - [Link to Competition](https://www.kaggle.com/c/sentiment-analysis-on-movie-reviews)
-
-## TIL
-- use `with torch.no_grad():` when in eval mode. 
-- How to use Glove embeddings in torch.
-
